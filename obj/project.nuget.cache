@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "aswFmE7oQab98m4jKIymO0P4TWyCe6Aj2tuQvy5HI+7RTtwhhBqB5OYX6ARY97XqmWSkGqZWHZVoeKyjXBKrHQ==",
+  "success": true,
+  "projectFilePath": "/home/mateo/Projetos/NetCore/prj-db-csv/prj-db-csv.csproj",
+  "expectedPackageFiles": [
+    "/home/mateo/.nuget/packages/csvhelper/27.1.1/csvhelper.27.1.1.nupkg.sha512"
+  ],
+  "logs": []
+}
