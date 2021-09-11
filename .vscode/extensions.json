@@ -1,0 +1,9 @@
+{
+	"recommendations": [
+		"adrianwilczynski.add-reference",
+        "doggy8088.netcore-extension-pack",
+        "formulahendry.dotnet-test-explorer",
+        "formulahendry.dotnet",
+        "adrianwilczynski.user-secrets"
+	]
+}
