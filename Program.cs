@@ -1,15 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
-using prj_db_csv.controller;
-using prj_db_csv.model;
+using prj_db_csv.service;
 
 namespace prj_db_csv
 {
     class Program
     {
-        private const string path = @"./DB/DB.csv"; // Aqui vai o nome do arquivo CSV
+        private const string path = @"./DB/CustomerList.csv"; // Aqui vai o nome do arquivo CSV
         private static BaseRead reader = new BaseRead(path);
         static void Main(string[] args)
         {
@@ -23,15 +20,12 @@ namespace prj_db_csv
         private static bool MainMenu()
         {
             Console.Clear();
-            PropertyInfo[] properties = typeof(PatientModel).GetProperties();
-            Console.WriteLine(properties[0].Name);
             Console.WriteLine("Aqui vai as opçẽos");
-            Console.WriteLine("[1] ");
-            Console.WriteLine("[2] ");
-            Console.WriteLine("[3] ");
-            Console.WriteLine("[4] ");
-            Console.WriteLine("[5] ");
-            Console.WriteLine("[6] ");
+            Console.WriteLine("[1] Consultar média de idade dos pacientes");
+            Console.WriteLine("[2] Consultar internações por ano");
+            Console.WriteLine("[3] Consultar hospitais");
+            Console.WriteLine("[4] Calcular tempo de internação");
+            Console.WriteLine("[5] Determinar tempos de espera na fila");
             Console.WriteLine("[0] Encerrar Aplicação");
             Console.Write("\r\nSelecione uma opção: ");
             switch (Console.ReadLine())
@@ -41,6 +35,9 @@ namespace prj_db_csv
                     return true;
                 case "2":
                     Menu2();
+                    return true;
+                case "3":
+                    Menu3();
                     return true;
                 case "0":
                     return false;
@@ -53,51 +50,55 @@ namespace prj_db_csv
         {
             InitialMenu("Descrição do Menu 1");
             var result = reader.ReadCsvPatientModel();
-            var properties = reader.GetPropertiesPatient();
             var restFilter = result.ToList<dynamic>();
-            PrintResult(restFilter, properties);
         }
 
         private static void Menu2()
         {
             InitialMenu("Descrição do Menu 2");
+            Console.WriteLine("Informe o município desejado: ");
+            var valor = Console.ReadLine();
             var result = reader.ReadCsvPatientModel();
-            var properties = reader.GetPropertiesPatient();
-            var restFilter = result.ToList<dynamic>();
-            PrintResult(restFilter, properties);
+            var restFilter = result.Where(m => m.Name == "Jhon").ToList<dynamic>();
+
+            var total2018 = result.Where(m => m.Municipio == valor && m.data_extracao.Year == 2018).ToList().Count();
+            var total2019 = result.Where(m => m.Municipio == valor && m.data_extracao.Year == 2019).ToList().Count();
+            var total2020 = result.Where(m => m.Municipio == valor && m.data_extracao.Year == 2020).ToList().Count();
+            var total2021 = result.Where(m => m.Municipio == valor && m.data_extracao.Year == 2021).ToList().Count();
+
+            Console.WriteLine($" | 2018: {total2018}");
+            Console.WriteLine($" | 2019: {total2019}");
+            Console.WriteLine($" | 2020: {total2020}");
+            Console.WriteLine($" | 2021: {total2021}");
+        }
+
+        /*
+            Este menu deve fazer tal coisa
+        */
+        private static void Menu3()
+        {
+            InitialMenu("Deve mostrar os dados filtrados conforme entrada de valors\r\nDados de entrada esperados");
+            Console.WriteLine("Informe o município desejado: ");
+            var valor = Console.ReadLine();
+            var result = reader.ReadCsvPatientModel();
+            var restFilter = result.Where(m => m.Name == valor).ToList<dynamic>();
+            // Aqui vai a logica para filstrar o dado. 
+
+            var totalOfMunicipality = result.Where(m => m.Name == valor).ToList().Count();
+            var totalPatientsM = result.Where(m => m.Name == valor && m.Genero == "M").ToList();
+            var totalPatientsF = result.Where(m => m.Name == valor && m.Genero == "F").ToList();
+            // Pegar a media por genero 
+            // Pegar a media total
+
+            Console.WriteLine($" | Numero de pacientes do Município: {totalOfMunicipality}");
+            Console.WriteLine($" | Média de idade dos pacientes por gênero: {1}");
+            Console.WriteLine($" | Média de idade de todos os pacientes: {2}");
         }
 
         private static void InitialMenu(string title)
         {
             Console.Clear();
             Console.WriteLine(title);
-        }
-
-        private static void PrintHeader(List<PropertyInfo> properties)
-        {
-            var header = " | ";
-            properties.ForEach(delegate (PropertyInfo property)
-            {
-                header += property.Name + " | ";
-            });
-            Console.WriteLine(header);
-        }
-
-        private static void PrintResult(List<dynamic> lines, List<PropertyInfo> properties)
-        {
-            PrintHeader(properties);
-            lines.ForEach(delegate (dynamic line)
-            {
-                var dataLine = " | ";
-                properties.ForEach(delegate (PropertyInfo property)
-                {
-                    dataLine += property.GetValue(line) + " | ";
-                });
-                Console.WriteLine(dataLine);
-            });
-            Console.WriteLine($"\r\nTotal de registros: {lines.Count()}");
-            Console.WriteLine("\r\nPrecione [Enter] para retornar ao menu principal");
-            Console.ReadLine();
         }
     }
 }

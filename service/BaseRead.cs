@@ -2,27 +2,25 @@ using CsvHelper;
 using CsvHelper.Configuration;
 using prj_db_csv.mapper;
 using prj_db_csv.model;
-using prj_db_csv.service;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Text;
 
-namespace prj_db_csv.controller
+namespace prj_db_csv.service
 {
     public class BaseRead : IBaseRead
     {
         private string path;
+        private string delimiter;
 
-        public BaseRead(string path)
+        public BaseRead(string path, string delimiter = ";")
         {
             this.path = path;
+            this.delimiter = delimiter;
         }
-
-        public List<PropertyInfo> GetPropertiesPatient() => typeof(PatientModel).GetProperties().ToList();
 
         public List<PatientModel> ReadCsvPatientModel()
         {
@@ -30,7 +28,7 @@ namespace prj_db_csv.controller
             {
                 var config = new CsvConfiguration(CultureInfo.InvariantCulture)
                 {
-                    Delimiter = ",",
+                    Delimiter = this.delimiter,
                     MissingFieldFound = null
                 };
                 using (var reader = new StreamReader(this.path, Encoding.Default))
@@ -43,19 +41,23 @@ namespace prj_db_csv.controller
             }
             catch (UnauthorizedAccessException e)
             {
-                throw new Exception(e.Message);
+                Console.WriteLine($"\r\nErro: Acesso não autorizado ao arquivo!\r\n");
+                return new List<PatientModel>();
             }
             catch (FieldValidationException e)
             {
-                throw new Exception(e.Message);
+                Console.WriteLine($"\r\nErro: Ocorreu um erro durante o mapeamento dos Fields do arquivo informa!\r\n");
+                return new List<PatientModel>();
             }
             catch (CsvHelperException e)
             {
-                throw new Exception(e.Message);
+                Console.WriteLine($"\r\nErro: Arquivo CSV mal formatado!\r\nPorfavor revise o arquivo de origem e tente novamente.\r\n");
+                return new List<PatientModel>();
             }
             catch (Exception e)
             {
-                throw new Exception(e.Message);
+                Console.WriteLine($"\r\nErro: {e.Message}");
+                return new List<PatientModel>();
             }
         }
     }
