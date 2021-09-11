@@ -59,17 +59,21 @@ namespace prj_db_csv
             Console.WriteLine("Informe o município desejado: ");
             var valor = Console.ReadLine();
             var result = reader.ReadCsvPatientModel();
-            var restFilter = result.Where(m => m.Name == "Jhon").ToList<dynamic>();
-
-            var total2018 = result.Where(m => m.Municipio == valor && m.data_extracao.Year == 2018).ToList().Count();
-            var total2019 = result.Where(m => m.Municipio == valor && m.data_extracao.Year == 2019).ToList().Count();
-            var total2020 = result.Where(m => m.Municipio == valor && m.data_extracao.Year == 2020).ToList().Count();
-            var total2021 = result.Where(m => m.Municipio == valor && m.data_extracao.Year == 2021).ToList().Count();
-
-            Console.WriteLine($" | 2018: {total2018}");
-            Console.WriteLine($" | 2019: {total2019}");
-            Console.WriteLine($" | 2020: {total2020}");
-            Console.WriteLine($" | 2021: {total2021}");
+            if (result.Where(m => m.Monicipio).ToList().Count())
+            {
+                Console.WriteLine($"\r\nO Município inforamdo não foi localizado! Município informado: {valor} ");
+            }
+            else
+            {
+                var total2018 = result.Where(m => m.Municipio == valor && m.data_extracao.Year == 2018).ToList().Count();
+                var total2019 = result.Where(m => m.Municipio == valor && m.data_extracao.Year == 2019).ToList().Count();
+                var total2020 = result.Where(m => m.Municipio == valor && m.data_extracao.Year == 2020).ToList().Count();
+                var total2021 = result.Where(m => m.Municipio == valor && m.data_extracao.Year == 2021).ToList().Count();
+                Console.WriteLine($" | 2018: {total2018}");
+                Console.WriteLine($" | 2019: {total2019}");
+                Console.WriteLine($" | 2020: {total2020}");
+                Console.WriteLine($" | 2021: {total2021}");
+            }
         }
 
         /*
