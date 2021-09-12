@@ -29,7 +29,9 @@ namespace prj_db_csv.service
                 var config = new CsvConfiguration(CultureInfo.InvariantCulture)
                 {
                     Delimiter = this.delimiter,
-                    MissingFieldFound = null
+                    MissingFieldFound = null,
+                    IgnoreBlankLines = false,
+                    TrimOptions = TrimOptions.Trim
                 };
                 using (var reader = new StreamReader(this.path, Encoding.Default))
                 using (var csv = new CsvReader(reader, config))
@@ -51,7 +53,7 @@ namespace prj_db_csv.service
             }
             catch (CsvHelperException e)
             {
-                Console.WriteLine($"\r\nErro: Arquivo CSV mal formatado!\r\nPorfavor revise o arquivo de origem e tente novamente.\r\n");
+                Console.WriteLine($"\r\nErro: Arquivo CSV mal formatado!\r\nPorfavor revise o arquivo de origem e tente novamente.\r\n{e.Message}");
                 return new List<PatientModel>();
             }
             catch (Exception e)

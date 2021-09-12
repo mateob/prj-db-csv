@@ -59,21 +59,22 @@ namespace prj_db_csv
             Console.WriteLine("Informe o município desejado: ");
             var valor = Console.ReadLine();
             var result = reader.ReadCsvPatientModel();
-            if (result.Where(m => m.Monicipio).ToList().Count())
+            if (result.Where(m => m.MunicipioResidencia.ToLower() == valor.ToLower()).ToList().Count() == 0)
             {
                 Console.WriteLine($"\r\nO Município inforamdo não foi localizado! Município informado: {valor} ");
             }
             else
             {
-                var total2018 = result.Where(m => m.Municipio == valor && m.data_extracao.Year == 2018).ToList().Count();
-                var total2019 = result.Where(m => m.Municipio == valor && m.data_extracao.Year == 2019).ToList().Count();
-                var total2020 = result.Where(m => m.Municipio == valor && m.data_extracao.Year == 2020).ToList().Count();
-                var total2021 = result.Where(m => m.Municipio == valor && m.data_extracao.Year == 2021).ToList().Count();
+                var total2018 = result.Where(m => m.MunicipioResidencia.ToLower() == valor.ToLower() && m.DataInternacao.GetValueOrDefault().Year == 2018).ToList().Count();
+                var total2019 = result.Where(m => m.MunicipioResidencia.ToLower() == valor.ToLower() && m.DataInternacao.GetValueOrDefault().Year == 2019).ToList().Count();
+                var total2020 = result.Where(m => m.MunicipioResidencia.ToLower() == valor.ToLower() && m.DataInternacao.GetValueOrDefault().Year == 2020).ToList().Count();
+                var total2021 = result.Where(m => m.MunicipioResidencia.ToLower() == valor.ToLower() && m.DataInternacao.GetValueOrDefault().Year == 2021).ToList().Count();
                 Console.WriteLine($" | 2018: {total2018}");
                 Console.WriteLine($" | 2019: {total2019}");
                 Console.WriteLine($" | 2020: {total2020}");
                 Console.WriteLine($" | 2021: {total2021}");
             }
+            FinishMenu();
         }
 
         /*
@@ -85,24 +86,31 @@ namespace prj_db_csv
             Console.WriteLine("Informe o município desejado: ");
             var valor = Console.ReadLine();
             var result = reader.ReadCsvPatientModel();
-            var restFilter = result.Where(m => m.Name == valor).ToList<dynamic>();
+            var restFilter = result.Where(m => m.MunicipioResidencia == valor).ToList<dynamic>();
             // Aqui vai a logica para filstrar o dado. 
 
-            var totalOfMunicipality = result.Where(m => m.Name == valor).ToList().Count();
-            var totalPatientsM = result.Where(m => m.Name == valor && m.Genero == "M").ToList();
-            var totalPatientsF = result.Where(m => m.Name == valor && m.Genero == "F").ToList();
+            var totalOfMunicipality = result.Where(m => m.MunicipioResidencia == valor).ToList().Count();
+            var totalPatientsM = result.Where(m => m.MunicipioResidencia == valor && m.Sexo.ToLower() == "MASCULINO".ToLower()).ToList();
+            var totalPatientsF = result.Where(m => m.MunicipioResidencia == valor && m.Sexo.ToLower() == "FEMININO".ToLower()).ToList();
             // Pegar a media por genero 
             // Pegar a media total
 
             Console.WriteLine($" | Numero de pacientes do Município: {totalOfMunicipality}");
             Console.WriteLine($" | Média de idade dos pacientes por gênero: {1}");
             Console.WriteLine($" | Média de idade de todos os pacientes: {2}");
+            FinishMenu();
         }
 
         private static void InitialMenu(string title)
         {
             Console.Clear();
             Console.WriteLine(title);
+        }
+
+        private static void FinishMenu()
+        {
+            Console.WriteLine("\r\nPrecione [Enter] para retornar ao menu principal");
+            Console.ReadLine();
         }
     }
 }
